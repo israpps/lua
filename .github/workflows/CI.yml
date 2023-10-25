@@ -41,8 +41,8 @@ jobs:
 
     - name: Compress & Rename bin folder
       run: |
-        mkdir -p ${{ github.event.repository.name }}/include/
-        mkdir -p ${{ github.event.repository.name }}/lib/
+        mkdir -p ps2${{ github.event.repository.name }}/include/
+        mkdir -p ps2${{ github.event.repository.name }}/lib/
         cp sample/*.elf ${{ github.event.repository.name }}/
         cp sample/*.lua ${{ github.event.repository.name }}/
         cp lua.h luaconf.h lualib.h lauxlib.h ${{ github.event.repository.name }}/include
