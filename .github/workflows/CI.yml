@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2sdk:latest
+    steps:
+    - name: Install dependencies
+      run: |
+        apk add build-base git bash p7zip
+
+    - name: Workaround permission issue
+      run: |
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Compile project
+      run: |
+        make clean all sample platform=PS2
+
+    - name: Get short SHA
+      id: slug
+      run: | 
+        echo "SHA8=$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+
+    - name: Get branch
+      if: github.ref != 'refs/heads/main'
+      id: brnch
+      run: | 
+        echo "BRANCH=$(echo -${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+    - name: Compress & Rename bin folder
+      run: |
+        mkdir -p ${{ github.event.repository.name }}/include/
+        mkdir -p ${{ github.event.repository.name }}/lib/
+        cp sample/*.elf ${{ github.event.repository.name }}/
+        cp sample/*.lua ${{ github.event.repository.name }}/
+        cp lua.h luaconf.h lualib.h lauxlib.h ${{ github.event.repository.name }}/include
+        cp lua liblua.a ${{ github.event.repository.name }}/lib
+        7z a -t7z ${{ github.event.repository.name }}${{ env.BRANCH }}.7z ${{ github.event.repository.name }}/
+  
+
+    - name: Upload artifacts
+      if: ${{ success() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ github.event.repository.name }}-${{ env.SHA8 }}
+        path: ${{ github.event.repository.name }}/**
+ 
+    - name: Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: true
+        files: |
+           ${{ github.event.repository.name }}${{ env.BRANCH }}.7z
