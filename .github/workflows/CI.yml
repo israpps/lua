@@ -41,13 +41,13 @@ jobs:
 
     - name: Compress & Rename bin folder
       run: |
-        mkdir -p ${{ github.event.repository.name }}/include/
-        mkdir -p ${{ github.event.repository.name }}/lib/
-        cp sample/*.elf ${{ github.event.repository.name }}/
-        cp sample/*.lua ${{ github.event.repository.name }}/
-        cp lua.h luaconf.h lualib.h lauxlib.h ${{ github.event.repository.name }}/include
-        cp lua liblua.a ${{ github.event.repository.name }}/lib
-        7z a -t7z ${{ github.event.repository.name }}${{ env.BRANCH }}.7z ${{ github.event.repository.name }}/
+        mkdir -p ps2${{ github.event.repository.name }}/include/
+        mkdir -p ps2${{ github.event.repository.name }}/lib/
+        cp sample/*.elf ps2${{ github.event.repository.name }}/
+        cp sample/*.lua ps2${{ github.event.repository.name }}/
+        cp lua.h luaconf.h lualib.h lauxlib.h ps2${{ github.event.repository.name }}/include
+        cp lua liblua.a ps2${{ github.event.repository.name }}/lib
+        7z a -t7z ${{ github.event.repository.name }}${{ env.BRANCH }}.7z ps2${{ github.event.repository.name }}/
   
 
     - name: Upload artifacts
@@ -55,7 +55,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ github.event.repository.name }}-${{ env.SHA8 }}
-        path: ${{ github.event.repository.name }}/**
+        path: ps2${{ github.event.repository.name }}/**
  
     - name: Release
       uses: marvinpinto/action-automatic-releases@latest
