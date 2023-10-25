@@ -61,7 +61,7 @@ int test_error(lua_State * L) {
 
     return 0;
 }
-
+#define TARGET (argc > 1) ? argv[1] : "boot.lua"
 
 int main(int argc, char ** argv) {
     init_scr();
@@ -70,16 +70,11 @@ int main(int argc, char ** argv) {
 
     scr_printf("%s\n", LUA_COPYRIGHT); //Gets Lua version
     
-    if (argc != 2) {
-	printf("You have to specify the lua script to run.\n");
-	return -1;
-    }
-    
     // Create lua VM
        
     if (!(L = luaL_newstate())) {
-    printf("Error creating lua_State\n");
-	return -1;
+        printf("Error creating lua_State\n");
+	    return -1;
     }
     
     lua_atpanic(L, test_error);
@@ -93,10 +88,10 @@ int main(int argc, char ** argv) {
     printf("test_export "); lua_register(L, "test_export", test_export);
     printf("done!\n");
     
-    scr_printf("Loading script file: %s\n", argv[1]);
+    scr_printf("Loading script file: %s\n", TARGET);
     
     // load script
-    int status = luaL_loadfile(L, argv[1]);
+    int status = luaL_loadfile(L, TARGET);
 	
     // call script
     if (status == 0) 
@@ -108,8 +103,9 @@ int main(int argc, char ** argv) {
     // show error, if any
     if (status != 0) 
     {
-	printf("error: %s\n", lua_tostring(L, -1));
-	lua_pop(L, 1);  // remove error message
+	    printf("error: %s\n", lua_tostring(L, -1));
+	    scr_printf("error: %s\n", lua_tostring(L, -1));
+	    lua_pop(L, 1);  // remove error message
     }
 
    
