@@ -223,9 +223,9 @@
 
 #if !defined(LUA_PATH_DEFAULT)
 #define LUA_PATH_DEFAULT  \
-		"./?.lua" "mc0:/LIBLUA/?.lua" "mc1:/LIBLUA/?.lua" \
-		"mass0:/LIBLUA/?.lua"  "mass1:/LIBLUA/?.lua" \
-		"pfs0:/LIBLUA/?.lua"
+		"./?.lua"LUA_PATH_SEP"mc0:/LIBLUA/?.lua"LUA_PATH_SEP"mc1:/LIBLUA/?.lua"LUA_PATH_SEP \
+		"mass0:/LIBLUA/?.lua"LUA_PATH_SEP"mass1:/LIBLUA/?.lua"LUA_PATH_SEP \
+		"pfs0:/LIBLUA/?.lua"LUA_PATH_SEP"host:/LIBLUA/?.lua"
 #endif
 
 #if !defined(LUA_CPATH_DEFAULT)
